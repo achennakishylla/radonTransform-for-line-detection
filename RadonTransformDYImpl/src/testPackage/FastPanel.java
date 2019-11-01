@@ -7,6 +7,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -307,7 +308,7 @@ public class FastPanel extends JPanel {
 				//double val = newtable[rho][degs];
 				double val = origtable[rho][degs];
 				// achen:: print table values with (rho, degs) coordinates
-				// System.out.println(val);
+				//System.out.println(val);
 				double part1 = val / maxAveFinal;
 				double part2 = part1 * 255;
 				int colorVal = (int) Math.floor(part2);
@@ -324,23 +325,49 @@ public class FastPanel extends JPanel {
 			}
 		}
 
+		// achen:: create file to write rho and theta values
+		try {
+			File file = new File("C:\\Users\\achen\\Desktop\\Fall '19\\Master's Thesis\\Radon Transform Code\\test.txt");
+			if(file.createNewFile()) {
+				System.out.println("Successfully created");
+			}
+			else {
+				System.out.println("Failed to create or file already exist");
+			}
+			FileWriter fileWriter = new FileWriter(file);
+			System.out.println("Writing fields to file:: ");
+			fileWriter.write(String.format("%s\t%s\t%s\n", "rho", "theta", "pixel"));
+			System.out.println("Writing data to file:: ");
+			
 		for (int i = 0; i < origPixelList.size(); i++) {
 			Pixel maxRhoTheta = origPixelList.get(i);
 			int rh = maxRhoTheta.x;
 			int degrees = maxRhoTheta.y;
+			double val = origtable[rh][degrees];
 
 			System.out.println("rho = " + rh);
-			System.out.println("degrees = " + degrees);
+			System.out.println("theta = " + degrees);
+			System.out.println("Pixel Value = " + val);
+			// achen:: write rho and theta to file
+			fileWriter.write(String.format("%d\t%d\t\t%f\n", rh, degrees, val));
+			fileWriter.flush();
 			finalGraphic.setColor(Color.BLUE);
 			finalGraphic.fillRect(rh - 1, degrees - 1, 4, 4);
 		}
+		fileWriter.close();
+		
+		}
+		catch(IOException e){
+			e.printStackTrace();				
+		}
+		// achen:: end write to file
 		
 		
 		 for (int i = 0; i < pixelList.size(); i++) 
 		 { 
 			 Pixel maxRhoTheta =  pixelList.get(i); int rh = maxRhoTheta.x; int degrees = maxRhoTheta.y;
-			 System.out.println("rho = " + rh); 
-			 System.out.println("degrees = " + degrees); 
+			 //System.out.println("rho = " + rh); 
+			 //System.out.println("degrees = " + degrees); 
 			 finalGraphic.setColor(Color.RED); 
 			 finalGraphic.fillRect(rh - 1, degrees - 1, 4, 4); 
 			 }
